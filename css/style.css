@@ -1,6 +1,7 @@
-*{
+* {
     box-sizing: border-box;
 }
+
 html, body {
     margin: 0;
     padding: 0;
@@ -18,7 +19,7 @@ h1 {
 
 button, button:hover, button:active, button:focus {
     padding: 0;
-    margin:0;
+    margin: 0;
     outline: none;
     font: inherit;
     color: inherit;
@@ -57,17 +58,18 @@ button:active {
     box-shadow: -10px 0 15px #222;
     background: #373737;
     margin: 0 auto 2rem auto;
-    padding:1.5rem 1.5rem 1.5rem 1.5rem;
+    padding: 1.5rem 1.5rem 1.5rem 1.5rem;
 }
 
 #top {
+    height: 50px;
     display: flex;
-    margin-bottom:1rem;
+    margin-bottom: 1rem;
     justify-content: center;
 }
 
 #logo {
-    width:200px;
+    width: 200px;
     font-family: 'Bungee Outline', cursive;
     font-size: 2.5rem;
     color: #fff;
@@ -75,7 +77,6 @@ button:active {
 }
 
 #solarpanels {
-    height: 50px;
     width: 200px;
     display: flex;
     flex-direction: row;
@@ -85,21 +86,29 @@ button:active {
 }
 
 .solarpanel {
-    height: 50px;
+    height: 48px;
     width: calc(200px/3);
     background: rgb(54, 0, 0);
-    border: 1px #000 solid;
+    border-left: 1px #000 solid;
+    border-right: 1px #000 solid;
+}
+
+.solarpanel:last-of-type {
+    border-right: 0;
+}
+.solarpanel:first-of-type {
+    border-left: 0;
 }
 
 #buttons {
-    min-height:500px;
+    min-height: 500px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(5, 1fr);
     grid-gap: 0.5rem;
 }
-#buttons::after{
 
+#buttons::after {
     content: "";
 }
 
