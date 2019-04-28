@@ -75,6 +75,7 @@ button:active {
 }
 
 #solarpanels {
+    height: 50px;
     width: 200px;
     display: flex;
     flex-direction: row;
