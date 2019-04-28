@@ -31,6 +31,8 @@ button:active {
 
 #calculator {
     display: grid;
+    grid-template-rows: minmax(0,1fr) minmax(0,2fr);
+    grid-auto-rows: 1fr;
     width: 600px;
     background: #373737;
     grid-template-columns: repeat(4, minmax(0, 1fr));
