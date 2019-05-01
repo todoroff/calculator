@@ -1,7 +1,7 @@
-export const sum = (...theArgs) => {
+/*export const sum = (...theArgs) => {
     return theArgs.reduce((runningTotal, number) => Number(runningTotal) + Number(number));
 }
-/*
+
 export const sutbract = (...theArgs) => {
     return theArgs.reduce((runningTotal, number) => runningTotal - number);
 }
