@@ -102,6 +102,9 @@ appendableBtns.forEach(btn => {
                 return;
             }
         }
+        if (/[a-z]i/.test(display.innerText))
+            expression = "0";
+
         buildExpression(el.target.innerText);
         lastInput = el.target.innerText;
     });
