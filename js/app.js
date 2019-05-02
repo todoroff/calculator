@@ -92,6 +92,9 @@ appendableBtns.forEach(btn => {
                 del();
         }
         if (el.target.id == "point") {
+            if (/(\.\d+)$/.test(expression))
+                return;
+            //append 0 before . if the previous input is not a digit
             if (/[\÷\×\+\-]$/.test(lastInput)) {
                 buildExpression("0" + el.target.innerText);
                 lastInput = el.target.innerText;
