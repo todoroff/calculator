@@ -21,9 +21,37 @@ const del = () => {
     display.innerText = expression;
     return expression;
 }
-const negate = () => {
-    console.log('TODO');
-    alert('TODO');
+const signChg = () => {
+    let newExp = expression.split(/([\÷\×\+\-])/);
+    console.log(newExp);
+
+    switch (true) {
+        //if single negative number
+        case (newExp[0] === "" && newExp[1] === "-" && newExp.length === 3):
+            newExp.splice(1, 1, "");
+            break;
+        //if single positive number
+        case (newExp.length === 1):
+            newExp.splice(0, 0, "-");
+            break;
+        //if - before the last number
+        case (newExp.slice(-2, -1)[0] === "-"):
+            newExp.splice(-2, 1, "+");
+            break;
+        //if + before the last number    
+        case (newExp.slice(-2, -1)[0] === "+"):
+            newExp.splice(-2, 1, "-");
+            break;
+        //if ÷ or × before the last number and it's positive
+        case ((newExp.slice(-2, -1)[0] === "×") || (newExp.slice(-2, -1)[0] === "÷")):
+            newExp.splice(-1, 0, "-");
+            break;
+    }
+    
+    expression = newExp.join("");
+    display.innerText = expression;
+
+    console.log(newExp);
     return;
 
 }
@@ -92,6 +120,7 @@ appendableBtns.forEach(btn => {
                 del();
         }
         if (el.target.id == "point") {
+            //disable multiple decimal points in one number
             if (/(\.\d+)$/.test(expression))
                 return;
             //append 0 before . if the previous input is not a digit
@@ -127,9 +156,9 @@ clrBtn.addEventListener("click", () => {
     lastInput = "0";
     display.innerText = "0";
 });
-const negBtn = document.querySelector("#negate");
-negBtn.addEventListener("click", () => {
-    negate();
+const signBtn = document.querySelector("#signChg");
+signBtn.addEventListener("click", () => {
+    signChg();
 });
 
 
