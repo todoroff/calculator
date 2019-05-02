@@ -47,8 +47,8 @@ const signChg = () => {
             newExp.splice(-1, 0, "-");
             break;
     }
-    
-    expression = newExp.join("");
+    //join and remove + that's directly after ÷ or ×
+    expression = newExp.join("").replace(/([÷×])(\+)/, '$1');
     display.innerText = expression;
 
     console.log(newExp);
