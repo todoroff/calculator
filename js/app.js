@@ -154,8 +154,8 @@ const resetExpr = () => {
 const equalsBtn = document.querySelector("#equals");
 
 equalsBtn.addEventListener("click", () => {
-    //remove floating point if it's immediately followed by =
-    if (lastInput === ".")
+    //remove floating point or operator if it's immediately followed by =
+    if (/[\.\+\-\×\÷]/.test(lastInput))
         del();
     expression = evaluate(display.innerText);
     display.innerText = expression;
