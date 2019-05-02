@@ -83,7 +83,7 @@ const evaluate = (expr) => {
     }
     //if only one number left return the result
     if (/^([\+\-]?(?:\d+[.])?\d+)$/.test(result)) {
-        result = result.replace("+","");
+        result = result.replace("+", "");
         if (result.length > 17 && (Number.isInteger(Number(result))))
             return Big(result).toExponential();
         if (result.length > 17 && (!Number.isInteger(Number(result))))
@@ -118,6 +118,9 @@ appendableBtns.forEach(btn => {
                 return;
             if (el.target.innerText !== lastInput && /[\÷\×\+\-]$/.test(lastInput) && el.target.id !== "point")
                 del();
+            //remove floating point if it's immediately followed by an operator
+            if (el.target.innerText !== lastInput && lastInput === ".")
+                del();
         }
         if (el.target.id == "point") {
             //disable multiple decimal points in one number
@@ -139,7 +142,11 @@ appendableBtns.forEach(btn => {
 });
 
 const equalsBtn = document.querySelector("#equals");
+
 equalsBtn.addEventListener("click", () => {
+    //remove floating point if it's immediately followed by =
+    if (lastInput === ".")
+        del();
     expression = evaluate(display.innerText);
     display.innerText = expression;
     lastInput = expression;
