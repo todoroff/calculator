@@ -10,6 +10,8 @@ const operations = {
 const operate = (match, a, operation, b) => {
     if (operation === '÷' && Number(b) === 0)
         return 'Zero division.'
+    if ((operation === '÷' || operation === '×') && Number(a) < 0 && Number(b) < 0)
+        return "+" + Big(operations[operation](Number(a), Number(b))).toFixed();
     return Big(operations[operation](Number(a), Number(b))).toFixed();
 }
 
@@ -80,7 +82,8 @@ const evaluate = (expr) => {
         return 'Zero divison.';
     }
     //if only one number left return the result
-    if (/^(-?(?:\d+[.])?\d+)$/.test(result)) {
+    if (/^([\+\-]?(?:\d+[.])?\d+)$/.test(result)) {
+        result = result.replace("+","");
         if (result.length > 17 && (Number.isInteger(Number(result))))
             return Big(result).toExponential();
         if (result.length > 17 && (!Number.isInteger(Number(result))))
