@@ -34,23 +34,6 @@ button:active {
     border: #777 inset;
 }
 
-/*#calculator {
-    display: grid;
-    grid-template-rows: minmax(0,1fr) minmax(0,2fr);
-    grid-auto-rows: 1fr;
-    height:100%;
-    width:80%;
-    max-width: 600px;
-    background: #373737;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    padding: 1.5rem 2rem 2.5rem 2rem;
-    grid-gap: 0.5rem;
-    margin: 0 auto;
-    border: 5px groove #ccc;
-    border-radius: 15px;
-    box-shadow: -10px 0 15px #222;
-}*/
-
 #calculator {
     width: 600px;
     border: 5px groove #ccc;
@@ -65,7 +48,7 @@ button:active {
     height: 50px;
     display: flex;
     margin-bottom: 1rem;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 }
 
