@@ -19,7 +19,7 @@ let expression = "0";
 const del = () => {
     expression = expression.slice(0, -1);
     if (expression.length === 0)
-        expression = "0";
+        resetExpr();
     display.innerText = expression;
     return expression;
 }
@@ -134,12 +134,17 @@ appendableBtns.forEach(btn => {
             }
         }
         if (/[a-z]i/.test(display.innerText))
-            expression = "0";
+            resetExpr();
 
         buildExpression(el.target.innerText);
         lastInput = el.target.innerText;
     });
 });
+
+const resetExpr = () => {
+    expression = 0;
+    lastInput = 0;
+}
 
 const equalsBtn = document.querySelector("#equals");
 
@@ -149,7 +154,7 @@ equalsBtn.addEventListener("click", () => {
         del();
     expression = evaluate(display.innerText);
     display.innerText = expression;
-    lastInput = expression;
+
 });
 const delBtn = document.querySelector("#del");
 delBtn.addEventListener("click", () => {
@@ -159,8 +164,7 @@ delBtn.addEventListener("click", () => {
 });
 const clrBtn = document.querySelector("#clear");
 clrBtn.addEventListener("click", () => {
-    expression = "0";
-    lastInput = "0";
+    resetExpr();
     display.innerText = "0";
 });
 const signBtn = document.querySelector("#signChg");
