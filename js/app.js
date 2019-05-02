@@ -113,6 +113,9 @@ let lastInput = "";
 const appendableBtns = document.querySelectorAll("button:not(.nonexpr)");
 appendableBtns.forEach(btn => {
     btn.addEventListener("click", (el) => {
+        if (el.target.className.includes("number") && lastInput === "="){
+            resetExpr();
+        }
         //make sure operators are not repeated or stacked
         if (el.target.className.includes("operator")) {
             if (el.target.innerText === lastInput)
@@ -143,8 +146,8 @@ appendableBtns.forEach(btn => {
 });
 
 const resetExpr = () => {
-    expression = 0;
-    lastInput = 0;
+    expression = "0";
+    lastInput = "0";
 }
 
 const equalsBtn = document.querySelector("#equals");
@@ -155,6 +158,7 @@ equalsBtn.addEventListener("click", () => {
         del();
     expression = evaluate(display.innerText);
     display.innerText = expression;
+    lastInput = "=";
 
 });
 const delBtn = document.querySelector("#del");
