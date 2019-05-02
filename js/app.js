@@ -21,6 +21,7 @@ const del = () => {
     if (expression.length === 0)
         resetExpr();
     display.innerText = expression;
+    lastInput = expression.slice(-1);
     return expression;
 }
 const signChg = () => {
