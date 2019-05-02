@@ -8,13 +8,13 @@ html, body {
     color: #fff;
     text-align: center;
     font-family: 'Bungee', cursive;
-    background: rgb(133, 200, 255);
+    background: rgb(192, 125, 0);
 }
 
 h1 {
     text-shadow: 0 2px 5px rgb(0, 0, 0);
     font-family: 'Bowlby One SC', cursive;
-    font-size: 4rem;
+    font-size: 3rem;
 }
 
 button, button:hover, button:active, button:focus {
