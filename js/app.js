@@ -156,7 +156,7 @@ const equalsBtn = document.querySelector("#equals");
 equalsBtn.addEventListener("click", () => {
     //remove floating point or operator if it's immediately followed by =
     if (/[\.\+\-\×\÷]/.test(lastInput)) {
-        input = lastInput
+        const input = lastInput
         del();
         if (input = ".")
             return;
