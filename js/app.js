@@ -71,6 +71,7 @@ const evaluate = (expr) => {
     const bigNum = /(\d+\.)*\d*e\+\d+/g;
 
     if (steps > 500) {
+        steps = 0;
         return 'Out of memory.';
     }
     //if in exponential form, convert to decimal so it doesn't break our functions
