@@ -35,7 +35,6 @@ const buildExpression = (symbol) => {
     }
     display.innerText = expression;
 
-    console.log(expression);
 }
 let steps = 0;
 const evaluate = (expr) => {
@@ -77,9 +76,6 @@ const evaluate = (expr) => {
     steps = 0;
     return result;
 }
-console.log(evaluate("2+3-25÷2+3--4×5"));
-console.log(evaluate("-4"));
-console.log(operate(undefined, "-2", "-", "-4"));
 
 
 const display = document.querySelector("#display");
@@ -132,6 +128,6 @@ const negBtn = document.querySelector("#negate");
 negBtn.addEventListener("click", () => {
     negate();
 });
-console.log(equalsBtn);
+
 
 
