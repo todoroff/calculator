@@ -114,7 +114,7 @@ let lastInput = "";
 const appendableBtns = document.querySelectorAll("button:not(.nonexpr)");
 appendableBtns.forEach(btn => {
     btn.addEventListener("click", (el) => {
-        if (el.target.className.includes("number") && lastInput === "="){
+        if (el.target.className.includes("number") && lastInput === "=") {
             resetExpr();
         }
         //make sure operators are not repeated or stacked
@@ -155,9 +155,11 @@ const equalsBtn = document.querySelector("#equals");
 
 equalsBtn.addEventListener("click", () => {
     //remove floating point or operator if it's immediately followed by =
-    if (/[\.\+\-\×\÷]/.test(lastInput)){
+    if (/[\.\+\-\×\÷]/.test(lastInput)) {
+        input = lastInput
         del();
-        return;
+        if (input = ".")
+            return;
     }
     expression = evaluate(display.innerText);
     display.innerText = expression;
