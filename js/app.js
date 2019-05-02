@@ -23,7 +23,6 @@ const del = () => {
 }
 const signChg = () => {
     let newExp = expression.split(/([\÷\×\+\-])/);
-    console.log(newExp);
 
     switch (true) {
         //if single negative number
@@ -50,8 +49,6 @@ const signChg = () => {
     //join and remove + that's directly after ÷ or ×
     expression = newExp.join("").replace(/([÷×])(\+)/, '$1');
     display.innerText = expression;
-
-    console.log(newExp);
     return;
 
 }
@@ -69,7 +66,7 @@ const evaluate = (expr) => {
     let result = expr;
     const bigNum = /(\d+\.)*\d*e\+\d+/g;
 
-    if (steps > 1000) {
+    if (steps > 500) {
         return 'Out of memory.';
     }
     //if in exponential form, convert to decimal so it doesn't break our functions
