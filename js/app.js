@@ -66,6 +66,7 @@ const buildExpression = (symbol) => {
 }
 let steps = 0;
 const evaluate = (expr) => {
+    steps++;
     let result = expr;
     const bigNum = /(\d+\.)*\d*e\+\d+/g;
 
