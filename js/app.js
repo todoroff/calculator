@@ -28,9 +28,13 @@ const evaluate = (expression) => {
         steps = 0;
         return 'Zero divison.';
     }
+    //remove + if it's the first character
+    if (/^\+/.test(result)) {
+        result = result.replace("+", "");
+        return evaluate(result);
+    }
     //if only one number left return the result
     if (/^([\+\-]?(?:\d+[.])?\d+)$/.test(result)) {
-        result = result.replace("+", "");
         if (result.length > 17 && (Number.isInteger(Number(result))))
             return Big(result).toExponential();
         if (result.length > 17 && (!Number.isInteger(Number(result))))
@@ -147,7 +151,7 @@ buttons.forEach(btn => {
                     return;
                 }
             }
-            if (/[a-z]i/.test(display.innerText))
+            if (/[a-z]/i.test(display.innerText))
                 resetExpr();
 
             display.innerText = buildExpression(display.innerText, el.target.innerText);
