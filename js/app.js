@@ -10,15 +10,13 @@ const operate = (match, a, operation, b) => {
 }
 
 
-const del = () => {
-    expression = expression.slice(0, -1);
-    if (expression.length === 0)
-        resetExpr();
-    display.innerText = expression;
-    lastInput = expression.slice(-1);
-    return expression;
+const del = (expression) => {
+    let expr = expression.slice(0, -1);
+    if (expr.length === 0)
+        expr = 0;
+    return expr;
 }
-const signChg = () => {
+const signChg = (expression) => {
     let newExp = expression.split(/([\÷\×\+\-])/);
 
     switch (true) {
@@ -44,24 +42,23 @@ const signChg = () => {
             break;
     }
     //join and remove + that's directly after ÷ or ×
-    expression = newExp.join("").replace(/([÷×])(\+)/, '$1');
-    display.innerText = expression;
-    return;
+    newExp = newExp.join("").replace(/([÷×])(\+)/, '$1');
+    return newExp;
 
 }
-const buildExpression = (symbol) => {
-    if (expression === "0" && !/[\÷\×\+\-\.]/.test(symbol)) {
-        expression = symbol;
+const buildExpression = (expression, symbol) => {
+    let built = expression;
+    if (built === "0" && !/[\÷\×\+\-\.]/.test(symbol)) {
+        built = symbol;
     } else {
-        expression += symbol;
+        built += symbol;
     }
-    display.innerText = expression;
-
+    return built;
 }
 
-const evaluate = (expr) => {
+const evaluate = (expression) => {
     steps++;
-    let result = expr;
+    let result = expression;
     const bigNum = /(\d+\.)*\d*e\+\d+/g;
 
     if (steps > 500) {
@@ -109,13 +106,13 @@ const operations = {
     '×': lib.multiply,
     '÷': lib.divide
 }
-let expression = "0";
+
 let steps = 0;
 let lastInput = "";
 const display = document.querySelector("#display");
 display.innerText = "0";
-
 const buttons = document.querySelectorAll("button");
+const delButton = buttons[1];
 buttons.forEach(btn => {
     btn.addEventListener("click", (el) => {
         if (!el.target.className.includes("nonexpr")) {
@@ -126,19 +123,21 @@ buttons.forEach(btn => {
             if (el.target.className.includes("operator")) {
                 if (el.target.innerText === lastInput)
                     return;
-                if (el.target.innerText !== lastInput && /[\÷\×\+\-]$/.test(lastInput) && el.target.id !== "point")
-                    del();
+                if (el.target.innerText !== lastInput && /[\÷\×\+\-]$/.test(lastInput) && el.target.id !== "point") {
+                    delButton.click();
+                }
                 //remove floating point if it's immediately followed by an operator
-                if (el.target.innerText !== lastInput && lastInput === ".")
-                    del();
+                if (el.target.innerText !== lastInput && lastInput === ".") {
+                    delButton.click();
+                }
             }
             if (el.target.id == "point") {
                 //disable multiple decimal points in one number
-                if (/(\.\d+)$/.test(expression))
+                if (/(\.\d+)$/.test(display.innerText))
                     return;
                 //append 0 before . if the previous input is not a digit
                 if (/[\÷\×\+\-]$/.test(lastInput)) {
-                    buildExpression("0" + el.target.innerText);
+                    display.innerText = buildExpression(display.innerText, "0" + el.target.innerText);
                     lastInput = el.target.innerText;
                     return;
                 }
@@ -146,30 +145,28 @@ buttons.forEach(btn => {
             if (/[a-z]i/.test(display.innerText))
                 resetExpr();
 
-            buildExpression(el.target.innerText);
+            display.innerText = buildExpression(display.innerText, el.target.innerText);
             lastInput = el.target.innerText;
         }
         else {
             switch (el.target.id) {
                 case "equals":
                     //remove floating point or operator if it's immediately followed by =
-                    if (/[\.\+\-\×\÷]/.test(lastInput))
-                        del();
-                    expression = evaluate(display.innerText);
-                    display.innerText = expression;
+                    if (/[\.\+\-\×\÷]/.test(lastInput)) {
+                        delButton.click();
+                    }
+                    display.innerText = evaluate(display.innerText);
                     lastInput = "=";
                     break;
                 case "del":
-                    del();
-                    display.innerText = expression;
-                    lastInput = expression.slice(-1);
+                    display.innerText = del(display.innerText);
+                    lastInput = display.innerText.slice(-1);
                     break;
                 case "clear":
                     resetExpr();
-                    display.innerText = "0";
                     break;
                 case "signChg":
-                    signChg();
+                    display.innerText = signChg(display.innerText);
                     break;
             }
 
@@ -178,6 +175,6 @@ buttons.forEach(btn => {
 });
 
 const resetExpr = () => {
-    expression = "0";
+    display.innerText = "0";
     lastInput = "0";
 }
