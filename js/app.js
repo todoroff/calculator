@@ -118,6 +118,8 @@ const buttons = document.querySelectorAll("button");
 const delButton = buttons[1];
 buttons.forEach(btn => {
     btn.addEventListener("click", (el) => {
+        if (/[a-z]/i.test(display.innerText))
+            resetExpr();
         if (!el.target.className.includes("nonexpr")) {
             if (el.target.className.includes("number") && lastInput === "=") {
                 resetExpr();
@@ -151,8 +153,6 @@ buttons.forEach(btn => {
                     return;
                 }
             }
-            if (/[a-z]/i.test(display.innerText))
-                resetExpr();
 
             display.innerText = buildExpression(display.innerText, el.target.innerText);
             lastInput = el.target.innerText;
