@@ -112,39 +112,66 @@ const evaluate = (expr) => {
 const display = document.querySelector("#display");
 display.innerText = "0";
 let lastInput = "";
-const appendableBtns = document.querySelectorAll("button:not(.nonexpr)");
-appendableBtns.forEach(btn => {
+const buttons = document.querySelectorAll("button");
+buttons.forEach(btn => {
     btn.addEventListener("click", (el) => {
-        if (el.target.className.includes("number") && lastInput === "="){
-            resetExpr();
-        }
-        //make sure operators are not repeated or stacked
-        if (el.target.className.includes("operator")) {
-            if (el.target.innerText === lastInput)
-                return;
-            if (el.target.innerText !== lastInput && /[\÷\×\+\-]$/.test(lastInput) && el.target.id !== "point")
-                del();
-            //remove floating point if it's immediately followed by an operator
-            if (el.target.innerText !== lastInput && lastInput === ".")
-                del();
-        }
-        if (el.target.id == "point") {
-            //disable multiple decimal points in one number
-            if (/(\.\d+)$/.test(expression))
-                return;
-            //append 0 before . if the previous input is not a digit
-            if (/[\÷\×\+\-]$/.test(lastInput)) {
-                buildExpression("0" + el.target.innerText);
-                lastInput = el.target.innerText;
-                return;
+        if (!el.target.className.includes("nonexpr")) {
+            if (el.target.className.includes("number") && lastInput === "=") {
+                resetExpr();
             }
-        }
-        if (/[a-z]i/.test(display.innerText))
-            resetExpr();
+            //make sure operators are not repeated or stacked
+            if (el.target.className.includes("operator")) {
+                if (el.target.innerText === lastInput)
+                    return;
+                if (el.target.innerText !== lastInput && /[\÷\×\+\-]$/.test(lastInput) && el.target.id !== "point")
+                    del();
+                //remove floating point if it's immediately followed by an operator
+                if (el.target.innerText !== lastInput && lastInput === ".")
+                    del();
+            }
+            if (el.target.id == "point") {
+                //disable multiple decimal points in one number
+                if (/(\.\d+)$/.test(expression))
+                    return;
+                //append 0 before . if the previous input is not a digit
+                if (/[\÷\×\+\-]$/.test(lastInput)) {
+                    buildExpression("0" + el.target.innerText);
+                    lastInput = el.target.innerText;
+                    return;
+                }
+            }
+            if (/[a-z]i/.test(display.innerText))
+                resetExpr();
 
-        buildExpression(el.target.innerText);
-        lastInput = el.target.innerText;
-    });
+            buildExpression(el.target.innerText);
+            lastInput = el.target.innerText;
+        }
+        else {
+            switch (el.target.id) {
+                case "equals":
+                    //remove floating point or operator if it's immediately followed by =
+                    if (/[\.\+\-\×\÷]/.test(lastInput))
+                        del();
+                    expression = evaluate(display.innerText);
+                    display.innerText = expression;
+                    lastInput = "=";
+                    break;
+                case "del":
+                    del();
+                    display.innerText = expression;
+                    lastInput = expression.slice(-1);
+                    break;
+                case "clear":
+                    resetExpr();
+                    display.innerText = "0";
+                    break;
+                case "signChg":
+                        signChg();
+                        break;
+                    }
+                
+        }
+        });
 });
 
 const resetExpr = () => {
@@ -152,32 +179,7 @@ const resetExpr = () => {
     lastInput = "0";
 }
 
-const equalsBtn = document.querySelector("#equals");
 
-equalsBtn.addEventListener("click", () => {
-    //remove floating point or operator if it's immediately followed by =
-    if (/[\.\+\-\×\÷]/.test(lastInput))
-        del();
-    expression = evaluate(display.innerText);
-    display.innerText = expression;
-    lastInput = "=";
-
-});
-const delBtn = document.querySelector("#del");
-delBtn.addEventListener("click", () => {
-    del();
-    display.innerText = expression;
-    lastInput = expression.slice(-1);
-});
-const clrBtn = document.querySelector("#clear");
-clrBtn.addEventListener("click", () => {
-    resetExpr();
-    display.innerText = "0";
-});
-const signBtn = document.querySelector("#signChg");
-signBtn.addEventListener("click", () => {
-    signChg();
-});
 
 
 
