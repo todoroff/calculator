@@ -1,11 +1,5 @@
 import * as lib from "./lib.js";
 import Big from "./big.js";
-const operations = {
-    '+': lib.add,
-    '-': lib.sutbract,
-    '×': lib.multiply,
-    '÷': lib.divide
-}
 
 const operate = (match, a, operation, b) => {
     if (operation === '÷' && Number(b) === 0)
@@ -15,7 +9,7 @@ const operate = (match, a, operation, b) => {
     return Big(operations[operation](Number(a), Number(b))).toFixed();
 }
 
-let expression = "0";
+
 const del = () => {
     expression = expression.slice(0, -1);
     if (expression.length === 0)
@@ -64,7 +58,7 @@ const buildExpression = (symbol) => {
     display.innerText = expression;
 
 }
-let steps = 0;
+
 const evaluate = (expr) => {
     steps++;
     let result = expr;
@@ -109,9 +103,18 @@ const evaluate = (expr) => {
 }
 
 
+const operations = {
+    '+': lib.add,
+    '-': lib.sutbract,
+    '×': lib.multiply,
+    '÷': lib.divide
+}
+let expression = "0";
+let steps = 0;
+let lastInput = "";
 const display = document.querySelector("#display");
 display.innerText = "0";
-let lastInput = "";
+
 const buttons = document.querySelectorAll("button");
 buttons.forEach(btn => {
     btn.addEventListener("click", (el) => {
@@ -166,20 +169,15 @@ buttons.forEach(btn => {
                     display.innerText = "0";
                     break;
                 case "signChg":
-                        signChg();
-                        break;
-                    }
-                
+                    signChg();
+                    break;
+            }
+
         }
-        });
+    });
 });
 
 const resetExpr = () => {
     expression = "0";
     lastInput = "0";
 }
-
-
-
-
-
