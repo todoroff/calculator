@@ -122,8 +122,14 @@ buttons.forEach(btn => {
             if (el.target.className.includes("operator")) {
                 if (el.target.innerText === lastInput)
                     return;
-                if (el.target.innerText !== lastInput && /[\÷\×\+\-]$/.test(lastInput) && el.target.id !== "point") {
+                if (el.target.innerText !== lastInput && /[\÷\×\+\-]$/.test(lastInput)
+                    && el.target.id !== "point") {
                     delButton.click();
+                    //if × or ÷ operator is pressed directly after negative sign change, 
+                    //which is preceded by another × or ÷ operator
+                    if (/[\÷\×]$/.test(lastInput) && el.target.id !== "point") {
+                        delButton.click();
+                    }
                 }
                 //remove floating point if it's immediately followed by an operator
                 if (el.target.innerText !== lastInput && lastInput === ".") {
