@@ -9,53 +9,6 @@ const operate = (match, a, operation, b) => {
     return Big(operations[operation](Number(a), Number(b))).toFixed();
 }
 
-
-const del = (expression) => {
-    let expr = expression.slice(0, -1);
-    if (expr.length === 0)
-        expr = 0;
-    return expr;
-}
-const signChg = (expression) => {
-    let newExp = expression.split(/([\÷\×\+\-])/);
-
-    switch (true) {
-        //if single negative number
-        case (newExp[0] === "" && newExp[1] === "-" && newExp.length === 3):
-            newExp.splice(1, 1, "");
-            break;
-        //if single positive number
-        case (newExp.length === 1):
-            newExp.splice(0, 0, "-");
-            break;
-        //if - before the last number
-        case (newExp.slice(-2, -1)[0] === "-"):
-            newExp.splice(-2, 1, "+");
-            break;
-        //if + before the last number    
-        case (newExp.slice(-2, -1)[0] === "+"):
-            newExp.splice(-2, 1, "-");
-            break;
-        //if ÷ or × before the last number and it's positive
-        case ((newExp.slice(-2, -1)[0] === "×") || (newExp.slice(-2, -1)[0] === "÷")):
-            newExp.splice(-1, 0, "-");
-            break;
-    }
-    //join and remove + that's directly after ÷ or ×
-    newExp = newExp.join("").replace(/([÷×])(\+)/, '$1');
-    return newExp;
-
-}
-const buildExpression = (expression, symbol) => {
-    let built = expression;
-    if (built === "0" && !/[\÷\×\+\-\.]/.test(symbol)) {
-        built = symbol;
-    } else {
-        built += symbol;
-    }
-    return built;
-}
-
 const evaluate = (expression) => {
     steps++;
     let result = expression;
@@ -99,6 +52,52 @@ const evaluate = (expression) => {
     return result;
 }
 
+const buildExpression = (expression, symbol) => {
+    let built = expression;
+    if (built === "0" && !/[\÷\×\+\-\.]/.test(symbol)) {
+        built = symbol;
+    } else {
+        built += symbol;
+    }
+    return built;
+}
+
+const del = (expression) => {
+    let expr = expression.slice(0, -1);
+    if (expr.length === 0)
+        expr = 0;
+    return expr;
+}
+const signChg = (expression) => {
+    let newExp = expression.split(/([\÷\×\+\-])/);
+
+    switch (true) {
+        //if single negative number
+        case (newExp[0] === "" && newExp[1] === "-" && newExp.length === 3):
+            newExp.splice(1, 1, "");
+            break;
+        //if single positive number
+        case (newExp.length === 1):
+            newExp.splice(0, 0, "-");
+            break;
+        //if - before the last number
+        case (newExp.slice(-2, -1)[0] === "-"):
+            newExp.splice(-2, 1, "+");
+            break;
+        //if + before the last number    
+        case (newExp.slice(-2, -1)[0] === "+"):
+            newExp.splice(-2, 1, "-");
+            break;
+        //if ÷ or × before the last number and it's positive
+        case ((newExp.slice(-2, -1)[0] === "×") || (newExp.slice(-2, -1)[0] === "÷")):
+            newExp.splice(-1, 0, "-");
+            break;
+    }
+    //join and remove + that's directly after ÷ or ×
+    newExp = newExp.join("").replace(/([÷×])(\+)/, '$1');
+    return newExp;
+
+}
 
 const operations = {
     '+': lib.add,
