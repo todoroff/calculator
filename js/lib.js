@@ -13,8 +13,3 @@ export const multiply = (a, b) => {
 export const divide = (a, b) => {
     return a / b;
 }
-
-export const negate = (a) => {
-    return -a;
-}
-
