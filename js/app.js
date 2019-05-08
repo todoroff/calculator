@@ -24,7 +24,7 @@ const evaluate = (expression) => {
         result = result.replace(bigNum, normalize);
         return evaluate(result);
     }
-    if (/[a-z]/.test(result)) {
+    if (/zero/i.test(result)) {
         steps = 0;
         return 'Zero divison.';
     }
@@ -118,7 +118,7 @@ const buttons = document.querySelectorAll("button");
 const delButton = buttons[1];
 buttons.forEach(btn => {
     btn.addEventListener("click", (el) => {
-        if (/[a-z]/i.test(display.innerText))
+        if (/(zero)|(memory)/i.test(display.innerText))
             resetExpr();
         if (!el.target.className.includes("nonexpr")) {
             if (el.target.className.includes("number") && lastInput === "=") {
