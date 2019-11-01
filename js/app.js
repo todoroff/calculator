@@ -114,74 +114,76 @@ let steps = 0;
 let lastInput = "";
 const display = document.querySelector("#display");
 display.innerText = "0";
-const buttons = document.querySelectorAll("button");
+const buttons = document.querySelector("#buttons");
 const delButton = buttons[1];
-buttons.forEach(btn => {
-    btn.addEventListener("click", (el) => {
-        if (/(zero)|(memory)/i.test(display.innerText))
+
+buttons.addEventListener("click", (el) => {
+    if (el.target.tagName !== 'BUTTON')
+        return;
+    if (/(zero)|(memory)/i.test(display.innerText))
+        resetExpr();
+    if (!el.target.className.includes("nonexpr")) {
+        if (el.target.className.includes("number") && lastInput === "=") {
             resetExpr();
-        if (!el.target.className.includes("nonexpr")) {
-            if (el.target.className.includes("number") && lastInput === "=") {
+        }
+        //make sure operators are not repeated or stacked
+        if (el.target.className.includes("operator")) {
+            if (el.target.innerText === lastInput)
+                return;
+            if (el.target.innerText !== lastInput && /[\÷\×\+\-]$/.test(lastInput)
+                && el.target.id !== "point") {
+                delButton.click();
+                //if × or ÷ operator is pressed directly after negative sign change, 
+                //which is preceded by another × or ÷ operator
+                if (/[\÷\×]$/.test(lastInput) && el.target.id !== "point") {
+                    delButton.click();
+                }
+            }
+            //remove floating point if it's immediately followed by an operator
+            if (el.target.innerText !== lastInput && lastInput === ".") {
+                delButton.click();
+            }
+        }
+        if (el.target.id == "point") {
+            //disable multiple decimal points in one number
+            if (/(\.\d+)$/.test(display.innerText))
+                return;
+            //append 0 before . if the previous input is not a digit
+            if (/[\÷\×\+\-]$/.test(lastInput)) {
+                display.innerText = buildExpression(display.innerText, "0" + el.target.innerText);
+                lastInput = el.target.innerText;
+                return;
+            }
+        }
+
+        display.innerText = buildExpression(display.innerText, el.target.innerText);
+        lastInput = el.target.innerText;
+    }
+    else {
+        switch (el.target.id) {
+            case "equals":
+                //remove floating point or operator if it's immediately followed by =
+                if (/[\.\+\-\×\÷]/.test(lastInput)) {
+                    delButton.click();
+                }
+                display.innerText = evaluate(display.innerText);
+                lastInput = "=";
+                break;
+            case "del":
+                display.innerText = del(display.innerText);
+                lastInput = display.innerText.slice(-1);
+                break;
+            case "clear":
                 resetExpr();
-            }
-            //make sure operators are not repeated or stacked
-            if (el.target.className.includes("operator")) {
-                if (el.target.innerText === lastInput)
-                    return;
-                if (el.target.innerText !== lastInput && /[\÷\×\+\-]$/.test(lastInput)
-                    && el.target.id !== "point") {
-                    delButton.click();
-                    //if × or ÷ operator is pressed directly after negative sign change, 
-                    //which is preceded by another × or ÷ operator
-                    if (/[\÷\×]$/.test(lastInput) && el.target.id !== "point") {
-                        delButton.click();
-                    }
-                }
-                //remove floating point if it's immediately followed by an operator
-                if (el.target.innerText !== lastInput && lastInput === ".") {
-                    delButton.click();
-                }
-            }
-            if (el.target.id == "point") {
-                //disable multiple decimal points in one number
-                if (/(\.\d+)$/.test(display.innerText))
-                    return;
-                //append 0 before . if the previous input is not a digit
-                if (/[\÷\×\+\-]$/.test(lastInput)) {
-                    display.innerText = buildExpression(display.innerText, "0" + el.target.innerText);
-                    lastInput = el.target.innerText;
-                    return;
-                }
-            }
-
-            display.innerText = buildExpression(display.innerText, el.target.innerText);
-            lastInput = el.target.innerText;
+                break;
+            case "signChg":
+                display.innerText = signChg(display.innerText);
+                break;
         }
-        else {
-            switch (el.target.id) {
-                case "equals":
-                    //remove floating point or operator if it's immediately followed by =
-                    if (/[\.\+\-\×\÷]/.test(lastInput)) {
-                        delButton.click();
-                    }
-                    display.innerText = evaluate(display.innerText);
-                    lastInput = "=";
-                    break;
-                case "del":
-                    display.innerText = del(display.innerText);
-                    lastInput = display.innerText.slice(-1);
-                    break;
-                case "clear":
-                    resetExpr();
-                    break;
-                case "signChg":
-                    display.innerText = signChg(display.innerText);
-                    break;
-            }
 
-        }
-    });
+    }
 });
+
 
 const resetExpr = () => {
     display.innerText = "0";
