@@ -112,15 +112,16 @@ const operations = {
 
 let steps = 0;
 let lastInput = "";
+let expr = "0";
 const display = document.querySelector("#display");
-display.innerText = "0";
+display.innerText = expr;
 const buttons = document.querySelector("#buttons");
 const delButton = buttons[1];
 
 buttons.addEventListener("click", (el) => {
     if (el.target.tagName !== 'BUTTON')
         return;
-    if (/(zero)|(memory)/i.test(display.innerText))
+    if (/(zero)|(memory)/i.test(expr))
         resetExpr();
     if (!el.target.className.includes("nonexpr")) {
         if (el.target.className.includes("number") && lastInput === "=") {
@@ -146,17 +147,19 @@ buttons.addEventListener("click", (el) => {
         }
         if (el.target.id == "point") {
             //disable multiple decimal points in one number
-            if (/(\.\d+)$/.test(display.innerText))
+            if (/(\.\d+)$/.test(expr))
                 return;
             //append 0 before . if the previous input is not a digit
             if (/[\÷\×\+\-]$/.test(lastInput)) {
-                display.innerText = buildExpression(display.innerText, "0" + el.target.innerText);
+                expr = buildExpression(expr, "0" + el.target.innerText);
+                display.innerText = expr;
                 lastInput = el.target.innerText;
                 return;
             }
         }
 
-        display.innerText = buildExpression(display.innerText, el.target.innerText);
+        expr = buildExpression(expr, el.target.innerText);
+        display.innerText = expr;
         lastInput = el.target.innerText;
     }
     else {
@@ -166,18 +169,21 @@ buttons.addEventListener("click", (el) => {
                 if (/[\.\+\-\×\÷]/.test(lastInput)) {
                     delButton.click();
                 }
-                display.innerText = evaluate(display.innerText);
+                expr = evaluate(expr);
+                display.innerText = expr;
                 lastInput = "=";
                 break;
             case "del":
-                display.innerText = del(display.innerText);
-                lastInput = display.innerText.slice(-1);
+                expr = del(expr);
+                display.innerText = expr;
+                lastInput = expr.slice(-1);
                 break;
             case "clear":
                 resetExpr();
                 break;
             case "signChg":
-                display.innerText = signChg(display.innerText);
+                expr = signChg(expr);
+                display.innerText = expr;
                 break;
         }
 
@@ -186,6 +192,7 @@ buttons.addEventListener("click", (el) => {
 
 
 const resetExpr = () => {
-    display.innerText = "0";
+    expr = "0";
+    display.innerText = expr;
     lastInput = "0";
 }
