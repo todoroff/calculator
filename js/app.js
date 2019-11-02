@@ -4,56 +4,67 @@ import Big from "./big.js";
 const operate = (match, a, operation, b) => {
     if (operation === '÷' && Number(b) === 0)
         return 'Zero division.'
-    if ((operation === '÷' || operation === '×') && Number(a) < 0 && Number(b) < 0)
-        return "+" + Big(operations[operation](Number(a), Number(b))).toFixed();
-    return Big(operations[operation](Number(a), Number(b))).toFixed();
+
+    const result = Big(operations[operation](Number(a), Number(b))).toFixed();
+
+    // if multiplying or dividing 2 negative numbers, add a plus sign in front of the result
+    // otherwise return the result
+    return ((operation === '÷' || operation === '×') && (Number(a) < 0 && Number(b) < 0) ?
+        "+" + result :
+        result);
 }
 
 const evaluate = (expression) => {
-    steps++;
-    let result = expression;
-    const bigNum = /(\d+\.)*\d*e\+\d+/g;
+    let steps = 0;
 
-    if (steps > 500) {
-        steps = 0;
-        return 'Out of memory.';
+    function crunch(expression) {
+        steps++;
+        let result = expression;
+        const bigNum = /(\d+\.)*\d*e\+\d+/g;
+
+        //in case of too many recursive calls
+        if (steps > 500) {
+            steps = 0;
+            return 'Out of memory.';
+        }
+
+        //if in exponential form, convert to decimal so it doesn't break our functions
+        if (bigNum.test(result)) {
+            let normalize = Big(result.match(bigNum)[0]).toFixed();
+            result = result.replace(bigNum, normalize);
+            return crunch(result);
+        }
+        if (/zero/i.test(result)) {
+            steps = 0;
+            return 'Zero divison.';
+        }
+        //remove + if it's the first character in a result
+        if (/^\+/.test(result)) {
+            result = result.replace("+", "");
+            return crunch(result);
+        }
+        //if only a single number left return the final result
+        if (/^([\+\-]?(?:\d+[.])?\d+)$/.test(result)) {
+            if (result.length > 17 && (Number.isInteger(Number(result))))
+                return Big(result).toExponential();
+            if (result.length > 17 && (!Number.isInteger(Number(result))))
+                return Big(result).toFixed(10);
+            steps = 0;
+            return result;
+        }
+        //deal with multiplication and division first
+        else if (/[\÷\×]/.test(result)) {
+            result = result.replace(/(-?(?:\d+[.])?\d+)([\÷\×])(-?(?:\d+[.])?\d+)/g, operate);
+            return crunch(result);
+        }
+        //next add and substract
+        else if (/[\+\-]/.test(result)) {
+            result = result.replace(/(-?(?:\d+[.])?\d+)([\+\-])(-?(?:\d+[.])?\d+)/g, operate);
+            return crunch(result);
+        }
     }
-    //if in exponential form, convert to decimal so it doesn't break our functions
-    if (bigNum.test(result)) {
-        let normalize = Big(result.match(bigNum)[0]).toFixed();
-        result = result.replace(bigNum, normalize);
-        return evaluate(result);
-    }
-    if (/zero/i.test(result)) {
-        steps = 0;
-        return 'Zero divison.';
-    }
-    //remove + if it's the first character
-    if (/^\+/.test(result)) {
-        result = result.replace("+", "");
-        return evaluate(result);
-    }
-    //if only one number left return the result
-    if (/^([\+\-]?(?:\d+[.])?\d+)$/.test(result)) {
-        if (result.length > 17 && (Number.isInteger(Number(result))))
-            return Big(result).toExponential();
-        if (result.length > 17 && (!Number.isInteger(Number(result))))
-            return Big(result).toFixed(10);
-        steps = 0;
-        return result;
-    }
-    //deal with multiplication and division first
-    else if (/[\÷\×]/.test(result)) {
-        result = result.replace(/(-?(?:\d+[.])?\d+)([\÷\×])(-?(?:\d+[.])?\d+)/g, operate);
-        return evaluate(result);
-    }
-    //next add and substract
-    else if (/[\+\-]/.test(result)) {
-        result = result.replace(/(-?(?:\d+[.])?\d+)([\+\-])(-?(?:\d+[.])?\d+)/g, operate);
-        return evaluate(result);
-    }
-    steps = 0;
-    return result;
+
+    return crunch(expression);
 }
 
 const buildExpression = (expression, symbol) => {
@@ -69,35 +80,37 @@ const buildExpression = (expression, symbol) => {
 const del = (expression) => {
     let expr = expression.slice(0, -1);
     if (expr.length === 0)
-        expr = 0;
+        expr = "0";
     return expr;
 }
 const signChg = (expression) => {
+    //split operators and operands
     let newExp = expression.split(/([\÷\×\+\-])/);
 
     switch (true) {
-        //if single negative number
+        //if single negative number, remove negative sign
         case (newExp[0] === "" && newExp[1] === "-" && newExp.length === 3):
             newExp.splice(1, 1, "");
             break;
-        //if single positive number
+        //if single positive number, add negative sign
         case (newExp.length === 1):
             newExp.splice(0, 0, "-");
             break;
-        //if - before the last number
+        //if - before the last number, change to +
         case (newExp.slice(-2, -1)[0] === "-"):
             newExp.splice(-2, 1, "+");
             break;
-        //if + before the last number    
+        //if + before the last number, change to -   
         case (newExp.slice(-2, -1)[0] === "+"):
             newExp.splice(-2, 1, "-");
             break;
-        //if ÷ or × before the last number and it's positive
+        // if ÷ or × before the last number and it's positive, append 
+        // negative sign before the operator
         case ((newExp.slice(-2, -1)[0] === "×") || (newExp.slice(-2, -1)[0] === "÷")):
             newExp.splice(-1, 0, "-");
             break;
     }
-    //join and remove + that's directly after ÷ or ×
+    //join and remove + that are directly after ÷ or ×
     newExp = newExp.join("").replace(/([÷×])(\+)/, '$1');
     return newExp;
 
@@ -110,7 +123,6 @@ const operations = {
     '÷': lib.divide
 }
 
-let steps = 0;
 let lastInput = "";
 let expr = "0";
 const display = document.querySelector("#display");
