@@ -1,6 +1,13 @@
 import * as lib from "./lib.js";
 import Big from "./big.js";
 
+const operations = {
+    '+': lib.add,
+    '-': lib.sutbract,
+    '×': lib.multiply,
+    '÷': lib.divide
+}
+
 const operate = (match, a, operation, b) => {
     if (operation === '÷' && Number(b) === 0)
         return 'Zero division.'
@@ -114,13 +121,6 @@ const signChg = (expression) => {
     newExp = newExp.join("").replace(/([÷×])(\+)/, '$1');
     return newExp;
 
-}
-
-const operations = {
-    '+': lib.add,
-    '-': lib.sutbract,
-    '×': lib.multiply,
-    '÷': lib.divide
 }
 
 let lastInput = "";
