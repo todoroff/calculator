@@ -31,7 +31,6 @@ const evaluate = (expression) => {
 
         //in case of too many recursive calls
         if (steps > 500) {
-            steps = 0;
             return 'Out of memory.';
         }
 
@@ -42,7 +41,6 @@ const evaluate = (expression) => {
             return crunch(result);
         }
         if (/zero/i.test(result)) {
-            steps = 0;
             return 'Zero divison.';
         }
         //remove + if it's the first character in a result
@@ -56,7 +54,6 @@ const evaluate = (expression) => {
                 return Big(result).toExponential();
             if (result.length > 17 && (!Number.isInteger(Number(result))))
                 return Big(result).toFixed(10);
-            steps = 0;
             return result;
         }
         //deal with multiplication and division first
